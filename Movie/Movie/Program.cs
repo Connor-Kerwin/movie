@@ -1,3 +1,8 @@
+using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Movie.Db;
+using MySqlConnector;
+
 namespace Movie;
 
 public class Program
@@ -12,6 +17,27 @@ public class Program
         // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
+
+        // TODO: Inject connection string / parameters from configuration!
+        // URL is not working, hmm
+
+        var sqlBuilder = new MySqlConnectionStringBuilder();
+        sqlBuilder.Port = 3306;
+        sqlBuilder.Server = "localhost";
+        sqlBuilder.Database = "myDatabase";
+        sqlBuilder.UserID = "root";
+        sqlBuilder.Password = "yourpassword";
+        var path = sqlBuilder.ToString();
+        
+        
+            //jdbc:mysql://localhost:3306/mydatabase
+            //Server=localhost;Database=mydatabase;User=root;Password=yourpassword;
+        builder.Services.AddDbContext<MovieDbContext>(options =>
+        {
+            options.UseMySql(
+                "Server=db;Database=mydatabase;User=root;Password=yourpassword;", 
+                new MySqlServerVersion(new Version(8, 0, 28)));
+        });
 
         var app = builder.Build();
 
