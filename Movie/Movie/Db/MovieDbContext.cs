@@ -16,6 +16,8 @@ public class MovieDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
 
+        // TODO: Need to have primary key (use an integer)
+        
         modelBuilder.Entity<MovieModel>()
             .ToTable("mymoviedb")
             .HasNoKey();
@@ -29,7 +31,7 @@ public class MovieDbContext : DbContext
     }
 }
 
-[Table("mymoviedb")]
+[Table("mymoviedb")] // TODO: Dont need this
 public class MovieModel
 {
   //  [Column("Id")] public int Id { get; set; }

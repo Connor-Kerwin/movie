@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Movie.Db;
 
 namespace Movie.Controllers;
@@ -17,9 +18,7 @@ public class MovieController : ControllerBase
     [HttpGet("Test")]
     public IActionResult Test()
     {
-        //return Ok("Hello");
-        
-        var t = db.Movies.FirstOrDefault();
+        var t = db.Movies.Take(1);
         return Ok(t);
     }
 }
