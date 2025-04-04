@@ -20,4 +20,5 @@ RUN dotnet publish "Movie.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:Use
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
+COPY movies.csv /app/movies.csv
 ENTRYPOINT ["dotnet", "Movie.dll"]
