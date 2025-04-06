@@ -2,8 +2,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MovieDatabase;
 
-[Table("mymoviedb")] // TODO: Dont need this
-public class MovieModel
+public class MovieEntity
 {
     // TODO: What wants to be nullable?
     

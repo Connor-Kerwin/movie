@@ -74,7 +74,7 @@ class Program
 
                         foreach (var csvModel in output)
                         {
-                            var model = new MovieModel()
+                            var model = new MovieEntity()
                             {
                                 Title = csvModel.Title,
                                 OriginalLanguage = csvModel.OriginalLanguage,

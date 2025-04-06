@@ -1,12 +1,25 @@
 using Microsoft.EntityFrameworkCore;
+using Movie.Models;
 using MovieDatabase;
 
 namespace Movie;
 
 public class Program
 {
+    private static void Test()
+    {
+        var entity = new MovieEntity();
+
+        entity.Genre = MovieGenres.Comedy | MovieGenres.Horror | MovieGenres.Thriller | MovieGenres.Romance;
+        //entity.Genre = (MovieGenres)int.MaxValue;
+        
+        var a = new MovieModel(entity);
+    }
+    
     public static async Task Main(string[] args)
     {
+        Test();
+        
         var builder = WebApplication.CreateBuilder(args);
         
         builder.Services.AddControllers();

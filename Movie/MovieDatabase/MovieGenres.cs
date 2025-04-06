@@ -1,26 +1,29 @@
 namespace MovieDatabase;
 
+/// <summary>
+/// An enum flags representation of the different available genres of movie.
+/// </summary>
 [Flags]
 public enum MovieGenres
 {
     None = 0,
-    Action = 1,
-    Adventure = 2 << 0,
-    ScienceFiction = 2 << 1,
-    Crime = 2 << 2,
-    Mystery = 2 << 3,
-    Thriller = 2 << 4,
-    Animation = 2 << 5,
-    Comedy = 2 << 6,
-    Family = 2 << 7,
-    Fantasy = 2 << 8,
-    War = 2 << 9,
-    Horror = 2 << 10,
-    Drama = 2 << 11,
-    Music = 2 << 12,
-    Romance = 2 << 13,
-    Western = 2 << 14,
-    History = 2 << 15,
-    TvMovie = 2 << 16,
-    Documentary = 2 << 17,
+    Action = 1 << 0,
+    Adventure = 1 << 1,
+    ScienceFiction = 1 << 2,
+    Crime = 1 << 3,
+    Mystery = 1 << 4,
+    Thriller = 1 << 5,
+    Animation = 1 << 6,
+    Comedy = 1 << 7,
+    Family = 1 << 8,
+    Fantasy = 1 << 9,
+    War = 1 << 10,
+    Horror = 1 << 11,
+    Drama = 1 << 12,
+    Music = 1 << 13,
+    Romance = 1 << 14,
+    Western = 1 << 15,
+    History = 1 << 16,
+    TvMovie = 1 << 17,
+    Documentary = 1 << 18,
 }

@@ -5,7 +5,7 @@ namespace MovieDatabase;
 
 public class MovieDbContext : DbContext
 {
-    public DbSet<MovieModel> Movies { get; set; }
+    public DbSet<MovieEntity> Movies { get; set; }
 
     public MovieDbContext(DbContextOptions<MovieDbContext> options)
         : base(options)
@@ -16,12 +16,12 @@ public class MovieDbContext : DbContext
     {
         base.OnModelCreating(modelBuilder);
         
-        modelBuilder.Entity<MovieModel>()
+        modelBuilder.Entity<MovieEntity>()
             .ToTable("movies")
             .HasKey(m => m.Id);
 
         // Define movie genre enum/int conversion mapping
-        modelBuilder.Entity<MovieModel>()
+        modelBuilder.Entity<MovieEntity>()
             .Property(m => m.Genre)
             .HasConversion(new EnumToNumberConverter<MovieGenres, int>());
     }

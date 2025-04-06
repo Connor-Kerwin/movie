@@ -1,4 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Movie.Models;
 using MovieDatabase;
 
 namespace Movie.Controllers;
@@ -15,9 +17,11 @@ public class MovieController : ControllerBase
     }
 
     [HttpGet("Test")]
-    public IActionResult Test()
+    public async Task<IActionResult> Test()
     {
-        var t = db.Movies.Take(1);
-        return Ok(t);
+        var entity = await db.Movies.FirstOrDefaultAsync();
+        var model = new MovieModel(entity);
+        
+        return Ok(model);
     }
 }
