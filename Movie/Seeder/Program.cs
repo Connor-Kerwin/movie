@@ -15,6 +15,10 @@ class Program
 {
     static async Task Main(string[] args)
     {
+        // NOTE: To simplify the implementation, a separate 'seeder' app has been chosen. This app is responsible
+        // for the DB related operations such as migration and seeding from the csv. This was helpful to avoid
+        // coupling the API to DB flow. In a microservice environment, this approach is nicer to work with!
+        
         var builder = Host.CreateApplicationBuilder();
 
         builder.Configuration.AddJsonFile(
@@ -85,7 +89,6 @@ class Program
 
                     using (var csv = new CsvReader(reader, config))
                     {
-                        var genres = new HashSet<string>();
                         var output = csv.GetRecords<MovieCsvModel>().ToList();
 
                         foreach (var csvModel in output)
@@ -101,7 +104,7 @@ class Program
                                 PosterUrl = csvModel.PosterUrl,
                                 Popularity = csvModel.Popularity,
                             };
-
+                            
                             var genre = ParseGenre(csvModel.Genre);
                             model.Genres = genre;
 
@@ -116,13 +119,6 @@ class Program
 
                             exported++;
                             context.Movies.Add(model);
-
-                            var csvGenres = csvModel.Genre.Split(',');
-                            foreach (var g in csvGenres)
-                            {
-                                var clean = g.Trim().ToLower();
-                                genres.Add(clean);
-                            }
                         }
                     }
 

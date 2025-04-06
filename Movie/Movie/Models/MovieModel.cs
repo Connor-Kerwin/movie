@@ -2,31 +2,56 @@ using MovieDatabase;
 
 namespace Movie.Models;
 
-public class PaginatedMoviesModel
-{
-    public PageInfoModel Pagination { get; } = new();
-    public List<MovieModel> Records { get; } = new();
-}
-
-public class PageInfoModel
-{
-    public int TotalRecords { get; set; }
-    public int Page { get; set; }
-    public int PageSize { get; set; }
-}
-
 public class MovieModel
 {
+    /// <summary>
+    /// The unique id for the movie.
+    /// </summary>
     public int Id { get; set; }
+    
+    /// <summary>
+    /// The name of the movie.
+    /// </summary>
     public string Title { get; set; }
+    
+    /// <summary>
+    /// A brief summary of the movie.
+    /// </summary>
     public string Overview { get; set; }
-    public float? Popularity { get; set; }
-    public string? PosterUrl { get; set; }
-    public int? VoteCount { get; set; }
-    public double? VoteAverage { get; set; }
-    public DateTime? ReleaseDate { get; set; }
-    public string? OriginalLanguage { get; set; }
-
+    
+    /// <summary>
+    /// A score of popularity of the movie.
+    /// </summary>
+    public float Popularity { get; set; }
+    
+    /// <summary>
+    /// The Url of the poster for the movie.
+    /// </summary>
+    public string PosterUrl { get; set; }
+    
+    /// <summary>
+    /// The total number of votes received from the viewers.
+    /// </summary>
+    public int VoteCount { get; set; }
+    
+    /// <summary>
+    /// The average voted rating for the movie (out of 10).
+    /// </summary>
+    public double VoteAverage { get; set; }
+    
+    /// <summary>
+    /// The date that the movie was released.
+    /// </summary>
+    public DateTime ReleaseDate { get; set; }
+    
+    /// <summary>
+    /// The original language of the movie.
+    /// </summary>
+    public string OriginalLanguage { get; set; }
+    
+    /// <summary>
+    /// A set of genres that the move is classified under.
+    /// </summary>
     public List<MovieGenre> Genres { get; } = [];
 
     public MovieModel(MovieEntity entity)
