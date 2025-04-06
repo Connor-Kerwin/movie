@@ -1,12 +1,8 @@
 using System.ComponentModel.DataAnnotations;
-using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 using Movie.Models;
 using MovieDatabase;
-using Swashbuckle.AspNetCore.Annotations;
 
 namespace Movie.Controllers;
 
@@ -21,26 +17,6 @@ public class MoviesController : ControllerBase
         this.db = db;
     }
 
-    [HttpGet("genres")]
-    public async Task<IActionResult> GetGenres()
-    {
-        var values = Enum.GetValues(typeof(MovieGenreFlags));
-        var names = new List<string>();
-
-        foreach (var value in values)
-        {
-            var genreValue = (MovieGenreFlags)value;
-            if (genreValue == MovieGenreFlags.None)
-            {
-                continue;
-            }
-
-            names.Add(genreValue.ToString().ToLower());
-        }
-
-        return Ok(names);
-    }
-
     [HttpGet]
     public async Task<IActionResult> GetMovies([FromQuery] SearchModel parameters)
     {
@@ -49,58 +25,46 @@ public class MoviesController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var result = await GetMoviesAsync(parameters);
-        return Ok(result);
-        //
-        // var resultModels = new List<MovieModel>(results.Count);
-        // foreach (var entity in results)
-        // {
-        //     var model = new MovieModel(entity);
-        //     resultModels.Add(model);
-        // }
-        //
-        //
-        // // HACK
-        // return Ok(resultModels);
+        var query = BuildQuery(parameters);
 
-        //
-        // var results = await db.Movies
-        //     .Skip(position)
-        //     .Take(actualPageSize)
-        //     .ToListAsync();
-        //
-        // var resultModels = new List<MovieModel>(results.Count);
-        // foreach (var entity in results)
-        // {
-        //     var model = new MovieModel(entity);
-        //     resultModels.Add(model);
-        // }
-        //
-        // return Ok(resultModels);
+        var count = await query.CountAsync();
+        
+        var position = parameters.Page * parameters.PageSize;
+        
+        var entities = await query
+            .Skip(position)
+            .Take(parameters.PageSize)
+            .ToListAsync();
+        
+        var result = new PaginatedMoviesModel()
+        {
+            Pagination = new PageInfoModel()
+            {
+                PageSize = parameters.PageSize,
+                Page = parameters.Page,
+                TotalRecords = count // TODO: Pull this as part of the query
+            },
+            Records = new List<MovieModel>()
+        };
+
+        foreach (var entity in entities)
+        {
+            var model = new MovieModel(entity);
+            result.Records.Add(model);
+        }
+
+        //return result;
+
+        // var result = await GetMoviesAsync(parameters);
+        return Ok(result);
     }
 
-    private async Task<PaginatedMoviesModel> GetMoviesAsync(SearchModel parameters)
+    private IQueryable<MovieEntity> BuildQuery(SearchModel parameters)
     {
-        var position = parameters.Page * parameters.PageSize;
         var genreFilter = ExtractGenreFilter(parameters);
 
         var request = db.Movies
             .AsNoTracking();
-
-        // Apply the ordering
-        switch (parameters.SortBy)
-        {
-            case SortMode.Title:
-            {
-                request = request.OrderBy(m => m.Title);
-            }
-                break;
-            case SortMode.ReleaseDate:
-            {
-                request = request.OrderBy(m => m.ReleaseDate);
-            }
-                break;
-        }
 
         // Optionally apply the genre filter
         if (genreFilter != MovieGenreFlags.None)
@@ -108,41 +72,141 @@ public class MoviesController : ControllerBase
             request = request.Where(m => (m.Genres & genreFilter) == genreFilter);
         }
 
-        var entities = await request
-            .GroupBy(m => true)
-            .Select(g => new
-            {
-                // NOTE: As a single transaction, pull out the total number of items
-                
-                Total = g.Count(),
-                Records = g.Skip(position).Take(parameters.PageSize).ToList()
-            })
-            .FirstOrDefaultAsync();
-            
-            //
-            // .Skip(position)
-            // .Take(parameters.PageSize)
-            // .ToListAsync();
-
-        var result = new PaginatedMoviesModel()
+        // Apply sorting and ordering
+        switch (parameters.SortBy)
         {
-            Pagination = new PageInfoModel()
+            case SortBy.Title:
             {
-                PageSize = parameters.PageSize,
-                Page = parameters.Page,
-                TotalRecords = entities.Total // TODO: Pull this as part of the query
-            },
-            Records = new List<MovieModel>()
-        };
-
-        foreach (var entity in entities.Records)
-        {
-            var model = new MovieModel(entity);
-            result.Records.Add(model);
+                if (parameters.OrderBy == OrderBy.Asc)
+                {
+                    request = request.OrderBy(m => m.Title);
+                }
+                else
+                {
+                    request = request.OrderByDescending(m => m.Title);
+                }
+            }
+                break;
+            case SortBy.ReleaseDate:
+            {
+                if (parameters.OrderBy == OrderBy.Asc)
+                {
+                    request = request.OrderBy(m => m.ReleaseDate);
+                }
+                else
+                {
+                    request = request.OrderByDescending(m => m.ReleaseDate);
+                }
+            }
+                break;
         }
 
-        return result;
+        // var entities = await request
+        //     .GroupBy(m => true)
+        //     .Select(g => new
+        //     {
+        //         // NOTE: As a single transaction, pull out the total number of items
+        //
+        //         Total = g.Count(),
+        //         Records = g.Skip(position).Take(parameters.PageSize).AsEnumerable()
+        //     })
+        //     .FirstOrDefaultAsync();
+
+        return request;
     }
+
+    // [HttpGet]
+    // public async Task<IActionResult> GetMovies([FromQuery] SearchModel parameters)
+    // {
+    //     if (!ModelState.IsValid)
+    //     {
+    //         return BadRequest(ModelState);
+    //     }
+    //
+    //     var position = parameters.Page * parameters.PageSize;
+    //     var genreFilter = ExtractGenreFilter(parameters);
+    //
+    //     var request = db.Movies
+    //         .AsNoTracking();
+    //
+    //     // Optionally apply the genre filter
+    //     if (genreFilter != MovieGenreFlags.None)
+    //     {
+    //         request = request.Where(m => (m.Genres & genreFilter) == genreFilter);
+    //     }
+    //     
+    //     // Apply the ordering
+    //     switch (parameters.SortBy)
+    //     {
+    //         case SortMode.Title:
+    //         {
+    //             request = request.OrderBy(m => m.Title);
+    //         }
+    //             break;
+    //         case SortMode.ReleaseDate:
+    //         {
+    //             request = request.OrderBy(m => m.ReleaseDate);
+    //         }
+    //             break;
+    //         default:
+    //         {
+    //             request = request.OrderBy(m => m.Id);
+    //         }
+    //             break;
+    //     }
+    //
+    //     var entities = await request
+    //         .GroupBy(m => true)
+    //         .Select(g => new
+    //         {
+    //             // NOTE: As a single transaction, pull out the total number of items
+    //             
+    //             Total = g.Count(),
+    //             Records = g.Skip(position).Take(parameters.PageSize).AsEnumerable()
+    //         })
+    //         .FirstOrDefaultAsync();
+    //
+    //     var result = new PaginatedMoviesModel()
+    //     {
+    //         Pagination = new PageInfoModel()
+    //         {
+    //             PageSize = parameters.PageSize,
+    //             Page = parameters.Page,
+    //             TotalRecords = entities.Total // TODO: Pull this as part of the query
+    //         },
+    //         Records = new List<MovieModel>()
+    //     };
+    //
+    //     foreach (var entity in entities.Records)
+    //     {
+    //         var model = new MovieModel(entity);
+    //         result.Records.Add(model);
+    //     }
+    //
+    //     //return result;
+    //     
+    //    // var result = await GetMoviesAsync(parameters);
+    //     return Ok(result);
+    // }
+
+    [HttpGet("genres")]
+    public async Task<IActionResult> GetGenres()
+    {
+        var values = Enum.GetValues<MovieGenre>();
+        var names = new List<MovieGenre>(values.Length);
+
+        foreach (var value in values)
+        {
+            names.Add(value);
+        }
+
+        return Ok(names);
+    }
+    // private async Task<PaginatedMoviesModel> GetMoviesAsync(SearchModel parameters)
+    // {
+    //   
+    // }
+
 
     private static MovieGenreFlags ExtractGenreFilter(SearchModel model)
     {
@@ -155,10 +219,16 @@ public class MoviesController : ControllerBase
     }
 }
 
-public enum SortMode
+public enum SortBy
 {
     Title,
     ReleaseDate
+}
+
+public enum OrderBy
+{
+    Asc,
+    Desc
 }
 
 public class SearchModel
@@ -174,9 +244,13 @@ public class SearchModel
     public int PageSize { get; set; }
 
     [FromQuery(Name = "sortby")]
-    [ModelBinder(BinderType = typeof(KebabCaseEnumModelBinder<SortMode>))]
-    public SortMode SortBy { get; set; } = SortMode.Title;
+    [ModelBinder(BinderType = typeof(KebabCaseEnumModelBinder<SortBy>))]
+    public SortBy SortBy { get; set; } = SortBy.Title;
 
+    [FromQuery(Name = "orderby")]
+    [ModelBinder(BinderType = typeof(KebabCaseEnumModelBinder<OrderBy>))]
+    public OrderBy OrderBy { get; set; } = OrderBy.Asc;
+    
     [MaxLength(32)]
     [FromQuery(Name = "genres")]
     [ModelBinder(BinderType = typeof(KebabCaseEnumModelBinder<MovieGenre>))]
