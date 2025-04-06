@@ -1,12 +1,18 @@
+using Movie.Models;
 using MovieDatabase;
 
-namespace Movie.Models;
+namespace Movie;
 
 /// <summary>
 /// A utility class which facilitates the process of converting between <see cref="MovieGenre"/> and <see cref="MovieGenreFlags"/>.
 /// </summary>
 public static class GenreMapper
 {
+    /// <summary>
+    /// Compose <paramref name="genres"/> into a <see cref="MovieGenreFlags"/>.
+    /// </summary>
+    /// <param name="genres"></param>
+    /// <returns></returns>
     public static MovieGenreFlags ComposeGenreFlags(IEnumerable<MovieGenre> genres)
     {
         var result = MovieGenreFlags.None;
@@ -19,12 +25,17 @@ public static class GenreMapper
         return result;
     }
     
-    public static void ExtractIndividualGenres(MovieGenreFlags genreFlags, ICollection<MovieGenre> outGenres)
+    /// <summary>
+    /// Extract a set of individual <see cref="MovieGenre"/> from <paramref name="genres"/> and store the results in <see cref="outGenres"/>.
+    /// </summary>
+    /// <param name="genres"></param>
+    /// <param name="outGenres"></param>
+    public static void ExtractIndividualGenres(MovieGenreFlags genres, ICollection<MovieGenre> outGenres)
     {
-        var intGenre = (int)genreFlags;
+        var intGenre = (int)genres;
 
         // Iterate the bits
-        for (uint bit = 1; bit <= (uint)genreFlags; bit <<= 1)
+        for (uint bit = 1; bit <= (uint)genres; bit <<= 1)
         {
             // Is the bit set?
             if ((intGenre & bit) != 0)
@@ -41,6 +52,12 @@ public static class GenreMapper
         }
     }
 
+    /// <summary>
+    /// Get a <see cref="MovieGenreFlags"/> from <paramref name="genre"/>.
+    /// </summary>
+    /// <param name="genre"></param>
+    /// <returns></returns>
+    /// <exception cref="ArgumentException"></exception>
     public static MovieGenreFlags GetFlagsGenre(MovieGenre genre)
     {
         return genre switch
