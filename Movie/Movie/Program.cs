@@ -40,7 +40,14 @@ public class Program
 
 
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(options =>
+        {
+            // Locate the XML documentation file
+            var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+            var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+            options.IncludeXmlComments(xmlPath);
+
+        });
 
         // NOTE: The database (MySQL) is deployed as part of the compose step.
         // In production, this would not be the best idea. It should be hosted separately.

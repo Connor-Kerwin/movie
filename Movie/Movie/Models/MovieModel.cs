@@ -4,8 +4,8 @@ namespace Movie.Models;
 
 public class PaginatedMoviesModel
 {
-    public PageInfoModel Pagination { get; set; }
-    public List<MovieModel> Records { get; set; }
+    public PageInfoModel Pagination { get; } = new();
+    public List<MovieModel> Records { get; } = new();
 }
 
 public class PageInfoModel
