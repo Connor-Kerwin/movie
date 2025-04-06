@@ -2,12 +2,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Movie.Models;
 using MovieDatabase;
-using MySqlConnector;
 
 namespace Movie.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/movies")]
 public class MovieController : ControllerBase
 {
     private readonly MovieDbContext db;
@@ -17,18 +16,27 @@ public class MovieController : ControllerBase
         this.db = db;
     }
 
-    [HttpGet("search")]
-    public async Task<IActionResult> Search(
-        [FromQuery] string? title,
-        [FromQuery] int? pageSize,
-        [FromQuery] int? page)
+    [HttpGet("{title}")]
+    public async Task<IActionResult> GetMovie([FromRoute] string title)
     {
-        var actualPage = page ?? 0;
-        var actualPageSize = pageSize ?? 0;
+        var entity = await db.Movies
+            .Where(m => m.Title == title)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
 
-        var position = actualPage * actualPageSize;
+        if (entity == null)
+        {
+            return NotFound();
+        }
 
-        var results = await GetMoviesAsync(actualPage, actualPageSize);
+        var model = new MovieModel(entity);
+        return Ok(model);
+    }
+
+    [HttpGet]
+    public async Task<IActionResult> GetMovies([FromQuery] SearchModel parameters)
+    {
+        var results = await GetMoviesAsync(parameters);
 
         var resultModels = new List<MovieModel>(results.Count);
         foreach (var entity in results)
@@ -39,7 +47,7 @@ public class MovieController : ControllerBase
 
 
         // HACK
-        return Ok();
+        return Ok(resultModels);
 
         //
         // var results = await db.Movies
@@ -57,15 +65,22 @@ public class MovieController : ControllerBase
         // return Ok(resultModels);
     }
 
-    private async Task<List<MovieEntity>> GetMoviesAsync(int page, int pageSize)
+    private async Task<List<MovieEntity>> GetMoviesAsync(SearchModel model)
     {
-        var position = page * pageSize;
+        var position = model.Page.Value * model.PageSize.Value;
 
         var results = await db.Movies
             .Skip(position)
-            .Take(pageSize)
+            .Take(model.PageSize.Value)
             .ToListAsync();
 
         return results;
     }
+}
+
+public class SearchModel
+{
+    public int? Page { get; set; }
+    public int? PageSize { get; set; }
+    public string? Title { get; set; }
 }

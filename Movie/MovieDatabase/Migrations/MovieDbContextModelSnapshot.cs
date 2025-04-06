@@ -22,7 +22,7 @@ namespace MovieDatabase.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("MovieDatabase.MovieModel", b =>
+            modelBuilder.Entity("MovieDatabase.MovieEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

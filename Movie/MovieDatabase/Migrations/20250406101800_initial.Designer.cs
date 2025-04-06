@@ -12,7 +12,7 @@ using MovieDatabase;
 namespace MovieDatabase.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    [Migration("20250406082141_initial")]
+    [Migration("20250406101800_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -25,7 +25,7 @@ namespace MovieDatabase.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("MovieDatabase.MovieModel", b =>
+            modelBuilder.Entity("MovieDatabase.MovieEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
