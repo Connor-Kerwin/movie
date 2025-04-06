@@ -2,6 +2,19 @@ using MovieDatabase;
 
 namespace Movie.Models;
 
+public class PaginatedMoviesModel
+{
+    public PageInfoModel Pagination { get; set; }
+    public List<MovieModel> Records { get; set; }
+}
+
+public class PageInfoModel
+{
+    public int TotalRecords { get; set; }
+    public int Page { get; set; }
+    public int PageSize { get; set; }
+}
+
 public class MovieModel
 {
     public string Title { get; set; }

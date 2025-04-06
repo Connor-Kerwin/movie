@@ -49,18 +49,19 @@ public class MoviesController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        var results = await GetMoviesAsync(parameters);
-
-        var resultModels = new List<MovieModel>(results.Count);
-        foreach (var entity in results)
-        {
-            var model = new MovieModel(entity);
-            resultModels.Add(model);
-        }
-
-
-        // HACK
-        return Ok(resultModels);
+        var result = await GetMoviesAsync(parameters);
+        return Ok(result);
+        //
+        // var resultModels = new List<MovieModel>(results.Count);
+        // foreach (var entity in results)
+        // {
+        //     var model = new MovieModel(entity);
+        //     resultModels.Add(model);
+        // }
+        //
+        //
+        // // HACK
+        // return Ok(resultModels);
 
         //
         // var results = await db.Movies
@@ -78,7 +79,7 @@ public class MoviesController : ControllerBase
         // return Ok(resultModels);
     }
 
-    private async Task<List<MovieEntity>> GetMoviesAsync(SearchModel parameters)
+    private async Task<PaginatedMoviesModel> GetMoviesAsync(SearchModel parameters)
     {
         var position = parameters.Page * parameters.PageSize;
         var genreFilter = ExtractGenreFilter(parameters);
@@ -107,10 +108,29 @@ public class MoviesController : ControllerBase
             request = request.Where(m => (m.Genres & genreFilter) == genreFilter);
         }
 
-        return await request
+        var entities = await request
             .Skip(position)
             .Take(parameters.PageSize)
             .ToListAsync();
+
+        var result = new PaginatedMoviesModel()
+        {
+            Pagination = new PageInfoModel()
+            {
+                PageSize = parameters.PageSize,
+                Page = parameters.Page,
+                TotalRecords = 1337 // TODO: Pull this as part of the query
+            },
+            Records = new List<MovieModel>()
+        };
+
+        foreach (var entity in entities)
+        {
+            var model = new MovieModel(entity);
+            result.Records.Add(model);
+        }
+
+        return result;
     }
 
     private static MovieGenreFlags ExtractGenreFilter(SearchModel model)
