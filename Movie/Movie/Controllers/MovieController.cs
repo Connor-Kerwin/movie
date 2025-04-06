@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Movie.Db;
+using MovieDatabase;
 
 namespace Movie.Controllers;
 
