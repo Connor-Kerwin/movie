@@ -22,17 +22,17 @@ namespace MovieDatabase.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
                     Genres = table.Column<int>(type: "int", nullable: false),
-                    Title = table.Column<string>(type: "longtext", nullable: true)
+                    Title = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Overview = table.Column<string>(type: "longtext", nullable: true)
+                    Overview = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    Popularity = table.Column<float>(type: "float", nullable: true),
-                    PosterUrl = table.Column<string>(type: "longtext", nullable: true)
+                    Popularity = table.Column<float>(type: "float", nullable: false),
+                    PosterUrl = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
-                    VoteCount = table.Column<int>(type: "int", nullable: true),
-                    VoteAverage = table.Column<double>(type: "double", nullable: true),
-                    ReleaseDate = table.Column<DateTime>(type: "datetime(6)", nullable: true),
-                    OriginalLanguage = table.Column<string>(type: "longtext", nullable: true)
+                    VoteCount = table.Column<int>(type: "int", nullable: false),
+                    VoteAverage = table.Column<double>(type: "double", nullable: false),
+                    ReleaseDate = table.Column<DateTime>(type: "datetime(6)", nullable: false),
+                    OriginalLanguage = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>

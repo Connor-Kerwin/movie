@@ -12,7 +12,7 @@ using MovieDatabase;
 namespace MovieDatabase.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    [Migration("20250406151553_initial")]
+    [Migration("20250406174106_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -37,27 +37,31 @@ namespace MovieDatabase.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("OriginalLanguage")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
                     b.Property<string>("Overview")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<float?>("Popularity")
+                    b.Property<float>("Popularity")
                         .HasColumnType("float");
 
                     b.Property<string>("PosterUrl")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<DateTime?>("ReleaseDate")
+                    b.Property<DateTime>("ReleaseDate")
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Title")
+                        .IsRequired()
                         .HasColumnType("longtext");
 
-                    b.Property<double?>("VoteAverage")
+                    b.Property<double>("VoteAverage")
                         .HasColumnType("double");
 
-                    b.Property<int?>("VoteCount")
+                    b.Property<int>("VoteCount")
                         .HasColumnType("int");
 
                     b.HasKey("Id");

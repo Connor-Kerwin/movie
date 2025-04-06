@@ -15,7 +15,7 @@ public class MovieDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        
+
         modelBuilder.Entity<MovieEntity>()
             .ToTable("movies")
             .HasKey(m => m.Id);

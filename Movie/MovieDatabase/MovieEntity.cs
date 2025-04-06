@@ -1,11 +1,9 @@
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace MovieDatabase;
 
 public class MovieEntity
 {
     // TODO: What wants to be nullable?
-    
+
     public int Id { get; set; }
     public MovieGenreFlags Genres { get; set; }
     public string Title { get; set; }
