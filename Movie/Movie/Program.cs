@@ -15,7 +15,7 @@ public class Program
     {
         var entity = new MovieEntity();
 
-        entity.Genre = MovieGenres.Comedy | MovieGenres.Horror | MovieGenres.Thriller | MovieGenres.Romance;
+        entity.Genres = MovieGenreFlags.Comedy | MovieGenreFlags.Horror | MovieGenreFlags.Thriller | MovieGenreFlags.Romance;
         //entity.Genre = (MovieGenres)int.MaxValue;
 
         var a = new MovieModel(entity);

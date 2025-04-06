@@ -21,7 +21,7 @@ namespace MovieDatabase.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Genre = table.Column<int>(type: "int", nullable: false),
+                    Genres = table.Column<int>(type: "int", nullable: false),
                     Title = table.Column<string>(type: "longtext", nullable: true)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     Overview = table.Column<string>(type: "longtext", nullable: true)

@@ -7,7 +7,7 @@ public class MovieEntity
     // TODO: What wants to be nullable?
     
     public int Id { get; set; }
-    public MovieGenres Genre { get; set; }
+    public MovieGenreFlags Genres { get; set; }
     public string? Title { get; set; }
     public string? Overview { get; set; }
     public float? Popularity { get; set; }

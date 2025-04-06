@@ -2,30 +2,35 @@ using MovieDatabase;
 
 namespace Movie.Models;
 
+/// <summary>
+/// A utility class which facilitates the process of converting between <see cref="MovieGenre"/> and <see cref="MovieGenreFlags"/>.
+/// </summary>
 public static class GenreMapper
 {
-    public static string GetGenreString(MovieGenre genre)
+    public static MovieGenreFlags ComposeGenreFlags(IEnumerable<MovieGenre> genres)
     {
-        return genre.ToString().ToLowerInvariant();
-    }
+        var result = MovieGenreFlags.None;
+        
+        foreach (var genre in genres)
+        {
+            result |= GetFlagsGenre(genre);
+        }
 
-    public static bool ParseSingleGenre(string str, out MovieGenre genre)
-    {
-        return Enum.TryParse<MovieGenre>(str, true, out genre);
+        return result;
     }
     
-    public static void ExtractGenres(MovieGenres genres, ICollection<MovieGenre> outGenres)
+    public static void ExtractIndividualGenres(MovieGenreFlags genreFlags, ICollection<MovieGenre> outGenres)
     {
-        var intGenre = (int)genres;
+        var intGenre = (int)genreFlags;
 
         // Iterate the bits
-        for (uint bit = 1; bit <= (uint)genres; bit <<= 1)
+        for (uint bit = 1; bit <= (uint)genreFlags; bit <<= 1)
         {
             // Is the bit set?
             if ((intGenre & bit) != 0)
             {
                 // If we encounter a bad genre, continue
-                var singleGenre = GetSingleGenre((MovieGenres)bit);
+                var singleGenre = GetSingleGenre((MovieGenreFlags)bit);
                 if (singleGenre == null)
                 {
                     continue;
@@ -36,56 +41,56 @@ public static class GenreMapper
         }
     }
 
-    public static MovieGenres GetFlagsGenre(MovieGenre genre)
+    public static MovieGenreFlags GetFlagsGenre(MovieGenre genre)
     {
         return genre switch
         {
-            MovieGenre.Action => MovieGenres.Action,
-            MovieGenre.Adventure => MovieGenres.Adventure,
-            MovieGenre.ScienceFiction => MovieGenres.ScienceFiction,
-            MovieGenre.Crime => MovieGenres.Crime,
-            MovieGenre.Mystery => MovieGenres.Mystery,
-            MovieGenre.Thriller => MovieGenres.Thriller,
-            MovieGenre.Animation => MovieGenres.Animation,
-            MovieGenre.Comedy => MovieGenres.Comedy,
-            MovieGenre.Family => MovieGenres.Family,
-            MovieGenre.Fantasy => MovieGenres.Fantasy,
-            MovieGenre.War => MovieGenres.War,
-            MovieGenre.Horror => MovieGenres.Horror,
-            MovieGenre.Drama => MovieGenres.Drama,
-            MovieGenre.Music => MovieGenres.Music,
-            MovieGenre.Romance => MovieGenres.Romance,
-            MovieGenre.Western => MovieGenres.Western,
-            MovieGenre.History => MovieGenres.History,
-            MovieGenre.TvMovie => MovieGenres.TvMovie,
-            MovieGenre.Documentary => MovieGenres.Documentary,
+            MovieGenre.Action => MovieGenreFlags.Action,
+            MovieGenre.Adventure => MovieGenreFlags.Adventure,
+            MovieGenre.ScienceFiction => MovieGenreFlags.ScienceFiction,
+            MovieGenre.Crime => MovieGenreFlags.Crime,
+            MovieGenre.Mystery => MovieGenreFlags.Mystery,
+            MovieGenre.Thriller => MovieGenreFlags.Thriller,
+            MovieGenre.Animation => MovieGenreFlags.Animation,
+            MovieGenre.Comedy => MovieGenreFlags.Comedy,
+            MovieGenre.Family => MovieGenreFlags.Family,
+            MovieGenre.Fantasy => MovieGenreFlags.Fantasy,
+            MovieGenre.War => MovieGenreFlags.War,
+            MovieGenre.Horror => MovieGenreFlags.Horror,
+            MovieGenre.Drama => MovieGenreFlags.Drama,
+            MovieGenre.Music => MovieGenreFlags.Music,
+            MovieGenre.Romance => MovieGenreFlags.Romance,
+            MovieGenre.Western => MovieGenreFlags.Western,
+            MovieGenre.History => MovieGenreFlags.History,
+            MovieGenre.TvMovie => MovieGenreFlags.TvMovie,
+            MovieGenre.Documentary => MovieGenreFlags.Documentary,
             _ => throw new ArgumentException("Bad genre", nameof(genre))
         };
     }
     
-    private static MovieGenre? GetSingleGenre(MovieGenres genre)
+    private static MovieGenre? GetSingleGenre(MovieGenreFlags genreFlag)
     {
-        return genre switch
+        return genreFlag switch
         {
-            MovieGenres.Action => MovieGenre.Action,
-            MovieGenres.Adventure => MovieGenre.Adventure,
-            MovieGenres.ScienceFiction => MovieGenre.ScienceFiction,
-            MovieGenres.Crime => MovieGenre.Crime,
-            MovieGenres.Mystery => MovieGenre.Mystery,
-            MovieGenres.Thriller => MovieGenre.Thriller,
-            MovieGenres.Animation => MovieGenre.Animation,
-            MovieGenres.Comedy => MovieGenre.Comedy,
-            MovieGenres.Family => MovieGenre.Family,
-            MovieGenres.Fantasy => MovieGenre.Fantasy,
-            MovieGenres.War => MovieGenre.War,
-            MovieGenres.Horror => MovieGenre.Horror,
-            MovieGenres.Drama => MovieGenre.Drama,
-            MovieGenres.Music => MovieGenre.Music,
-            MovieGenres.Romance => MovieGenre.Romance,
-            MovieGenres.Western => MovieGenre.Western,
-            MovieGenres.History => MovieGenre.History,
-            MovieGenres.TvMovie => MovieGenre.TvMovie,
-            MovieGenres.Documentary => MovieGenre.Documentary,
+            MovieGenreFlags.Action => MovieGenre.Action,
+            MovieGenreFlags.Adventure => MovieGenre.Adventure,
+            MovieGenreFlags.ScienceFiction => MovieGenre.ScienceFiction,
+            MovieGenreFlags.Crime => MovieGenre.Crime,
+            MovieGenreFlags.Mystery => MovieGenre.Mystery,
+            MovieGenreFlags.Thriller => MovieGenre.Thriller,
+            MovieGenreFlags.Animation => MovieGenre.Animation,
+            MovieGenreFlags.Comedy => MovieGenre.Comedy,
+            MovieGenreFlags.Family => MovieGenre.Family,
+            MovieGenreFlags.Fantasy => MovieGenre.Fantasy,
+            MovieGenreFlags.War => MovieGenre.War,
+            MovieGenreFlags.Horror => MovieGenre.Horror,
+            MovieGenreFlags.Drama => MovieGenre.Drama,
+            MovieGenreFlags.Music => MovieGenre.Music,
+            MovieGenreFlags.Romance => MovieGenre.Romance,
+            MovieGenreFlags.Western => MovieGenre.Western,
+            MovieGenreFlags.History => MovieGenre.History,
+            MovieGenreFlags.TvMovie => MovieGenre.TvMovie,
+            MovieGenreFlags.Documentary => MovieGenre.Documentary,
             _ => null
         };
     }

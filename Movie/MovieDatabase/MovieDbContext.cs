@@ -22,7 +22,7 @@ public class MovieDbContext : DbContext
 
         // Define movie genre enum/int conversion mapping
         modelBuilder.Entity<MovieEntity>()
-            .Property(m => m.Genre)
-            .HasConversion(new EnumToNumberConverter<MovieGenres, int>());
+            .Property(m => m.Genres)
+            .HasConversion(new EnumToNumberConverter<MovieGenreFlags, int>());
     }
 }

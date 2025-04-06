@@ -30,7 +30,7 @@ namespace MovieDatabase.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Genre")
+                    b.Property<int>("Genres")
                         .HasColumnType("int");
 
                     b.Property<string>("OriginalLanguage")

@@ -12,7 +12,7 @@ using MovieDatabase;
 namespace MovieDatabase.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
-    [Migration("20250406101800_initial")]
+    [Migration("20250406151553_initial")]
     partial class initial
     {
         /// <inheritdoc />
@@ -33,7 +33,7 @@ namespace MovieDatabase.Migrations
 
                     MySqlPropertyBuilderExtensions.UseMySqlIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int>("Genre")
+                    b.Property<int>("Genres")
                         .HasColumnType("int");
 
                     b.Property<string>("OriginalLanguage")

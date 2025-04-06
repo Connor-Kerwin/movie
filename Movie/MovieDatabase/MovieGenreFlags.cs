@@ -2,9 +2,10 @@ namespace MovieDatabase;
 
 /// <summary>
 /// An enum flags representation of the different available genres of movie.
+/// This enum is database-optimized, compressing all the known genres into bitflags.
 /// </summary>
 [Flags]
-public enum MovieGenres
+public enum MovieGenreFlags
 {
     None = 0,
     Action = 1 << 0,

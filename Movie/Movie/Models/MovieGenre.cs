@@ -4,7 +4,7 @@ namespace Movie.Models;
 
 /// <summary>
 /// A representation of a single movie genre.
-/// This differs from <see cref="MovieGenres"/>, only ever
+/// This differs from <see cref="MovieGenreFlags"/>, only ever
 /// representing a single genre. This also doesn't need to
 /// have a 'none' genre, making business logic easier to work with!
 /// </summary>

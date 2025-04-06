@@ -87,12 +87,12 @@ class Program
                             };
                             
                             var genre = ParseGenre(csvModel.Genre);
-                            model.Genre = genre;
+                            model.Genres = genre;
 
                             // TODO: Here, if there is a movie genre that is none, what is the best course of action?
                             //  A nullable genre would maybe work, but it makes usage awkward. Maybe unknown genre?
                             
-                            if (genre == MovieGenres.None)
+                            if (genre == MovieGenreFlags.None)
                             {
                                 Console.WriteLine($"Failed to identify movie genre '{csvModel.Genre}' for {csvModel.Title}");
                             }
@@ -114,9 +114,9 @@ class Program
         }
     }
 
-    private static MovieGenres ParseGenre(string genre)
+    private static MovieGenreFlags ParseGenre(string genre)
     {
-        var result = MovieGenres.None;
+        var result = MovieGenreFlags.None;
 
         var split = genre.Split(',');
         foreach (var item in split)
@@ -127,7 +127,7 @@ class Program
 
             // A none-genre here is unknown.
             // Ideally we should actually handle this case. Unknown genre?
-            if (itemGenre != MovieGenres.None)
+            if (itemGenre != MovieGenreFlags.None)
             {
                 result |= itemGenre;
             }
@@ -136,30 +136,30 @@ class Program
         return result;
     }
 
-    private static MovieGenres StringToGenre(string genre)
+    private static MovieGenreFlags StringToGenre(string genre)
     {
         return genre switch
         {
-            "action" => MovieGenres.Action,
-            "animation" => MovieGenres.Animation,
-            "adventure" => MovieGenres.Adventure,
-            "science fiction" => MovieGenres.ScienceFiction,
-            "crime" => MovieGenres.Crime,
-            "mystery" => MovieGenres.Mystery,
-            "thriller" => MovieGenres.Thriller,
-            "comedy" => MovieGenres.Comedy,
-            "family" => MovieGenres.Family,
-            "fantasy" => MovieGenres.Fantasy,
-            "war" => MovieGenres.War,
-            "horror" => MovieGenres.Horror,
-            "drama" => MovieGenres.Drama,
-            "music" => MovieGenres.Music,
-            "romance" => MovieGenres.Romance,
-            "western" => MovieGenres.Western,
-            "history" => MovieGenres.History,
-            "tv movie" => MovieGenres.TvMovie,
-            "documentary" => MovieGenres.Documentary,
-            _ => MovieGenres.None
+            "action" => MovieGenreFlags.Action,
+            "animation" => MovieGenreFlags.Animation,
+            "adventure" => MovieGenreFlags.Adventure,
+            "science fiction" => MovieGenreFlags.ScienceFiction,
+            "crime" => MovieGenreFlags.Crime,
+            "mystery" => MovieGenreFlags.Mystery,
+            "thriller" => MovieGenreFlags.Thriller,
+            "comedy" => MovieGenreFlags.Comedy,
+            "family" => MovieGenreFlags.Family,
+            "fantasy" => MovieGenreFlags.Fantasy,
+            "war" => MovieGenreFlags.War,
+            "horror" => MovieGenreFlags.Horror,
+            "drama" => MovieGenreFlags.Drama,
+            "music" => MovieGenreFlags.Music,
+            "romance" => MovieGenreFlags.Romance,
+            "western" => MovieGenreFlags.Western,
+            "history" => MovieGenreFlags.History,
+            "tv movie" => MovieGenreFlags.TvMovie,
+            "documentary" => MovieGenreFlags.Documentary,
+            _ => MovieGenreFlags.None
         };
     }
 

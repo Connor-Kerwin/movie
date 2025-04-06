@@ -24,13 +24,13 @@ public class MoviesController : ControllerBase
     [HttpGet("genres")]
     public async Task<IActionResult> GetGenres()
     {
-        var values = Enum.GetValues(typeof(MovieGenres));
+        var values = Enum.GetValues(typeof(MovieGenreFlags));
         var names = new List<string>();
 
         foreach (var value in values)
         {
-            var genreValue = (MovieGenres)value;
-            if (genreValue == MovieGenres.None)
+            var genreValue = (MovieGenreFlags)value;
+            if (genreValue == MovieGenreFlags.None)
             {
                 continue;
             }
@@ -44,15 +44,12 @@ public class MoviesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetMovies([FromQuery] SearchModel parameters)
     {
-        // TODO: Genre validation can maybe run automatically as a custom validator!
-        var genreFilter = parameters.ValidateGenre(ModelState);
-
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
         }
 
-        var results = await GetMoviesAsync(parameters, genreFilter);
+        var results = await GetMoviesAsync(parameters);
 
         var resultModels = new List<MovieModel>(results.Count);
         foreach (var entity in results)
@@ -81,40 +78,49 @@ public class MoviesController : ControllerBase
         // return Ok(resultModels);
     }
 
-    private async Task<List<MovieEntity>> GetMoviesAsync(SearchModel model, MovieGenres genreFilter)
+    private async Task<List<MovieEntity>> GetMoviesAsync(SearchModel parameters)
     {
-        var position = model.Page * model.PageSize;
+        var position = parameters.Page * parameters.PageSize;
+        var genreFilter = ExtractGenreFilter(parameters);
 
         var request = db.Movies
             .AsNoTracking();
 
-        // Optionally apply the genre filter
-        if (genreFilter != MovieGenres.None)
+        // Apply the ordering
+        switch (parameters.SortBy)
         {
-            request = request.Where(m => (m.Genre & genreFilter) == genreFilter);
+            case SortMode.Title:
+            {
+                request = request.OrderBy(m => m.Title);
+            }
+                break;
+            case SortMode.ReleaseDate:
+            {
+                request = request.OrderBy(m => m.ReleaseDate);
+            }
+                break;
+        }
+
+        // Optionally apply the genre filter
+        if (genreFilter != MovieGenreFlags.None)
+        {
+            request = request.Where(m => (m.Genres & genreFilter) == genreFilter);
         }
 
         return await request
             .Skip(position)
-            .Take(model.PageSize)
+            .Take(parameters.PageSize)
             .ToListAsync();
     }
 
-    private MovieGenres ExtractGenreFilter(SearchModel model)
+    private static MovieGenreFlags ExtractGenreFilter(SearchModel model)
     {
         if (model.Genres == null)
         {
-            return MovieGenres.None;
+            return MovieGenreFlags.None;
         }
 
-        var result = MovieGenres.None;
-
-        foreach (var str in model.Genres)
-        {
-            ModelState.AddModelError("", "");
-        }
-
-        return result;
+        return GenreMapper.ComposeGenreFlags(model.Genres);
     }
 }
 
@@ -144,28 +150,4 @@ public class SearchModel
     [FromQuery(Name = "genres")]
     [ModelBinder(BinderType = typeof(KebabCaseEnumModelBinder<MovieGenre>))]
     public HashSet<MovieGenre>? Genres { get; set; }
-
-    public MovieGenres ValidateGenre(ModelStateDictionary modelState)
-    {
-        if (Genres == null)
-        {
-            return MovieGenres.None;
-        }
-
-        var result = MovieGenres.None;
-
-        foreach (var str in Genres)
-        {
-            // if (!GenreMapper.ParseSingleGenre(str, out var singleGenre))
-            // {
-            //     modelState.AddModelError("genres", $"{str} is not a valid genre");
-            //     continue;
-            // }
-
-            var flagsGenre = GenreMapper.GetFlagsGenre(str);
-            result |= flagsGenre;
-        }
-
-        return result;
-    }
 }
