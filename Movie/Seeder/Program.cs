@@ -109,9 +109,6 @@ class Program
                             var genre = ParseGenre(csvModel.Genre);
                             model.Genres = genre;
 
-                            // TODO: Here, if there is a movie genre that is none, what is the best course of action?
-                            //  A nullable genre would maybe work, but it makes usage awkward. Maybe unknown genre?
-
                             if (genre == MovieGenreFlags.None)
                             {
                                 logger.LogWarning(
