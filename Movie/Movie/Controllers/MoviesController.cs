@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Movie.Models;
 using MovieDatabase;
+using MovieDatabase.Entities;
 using Swashbuckle.AspNetCore.Annotations;
 
 namespace Movie.Controllers;

@@ -1,5 +1,6 @@
 using Movie.Models;
 using MovieDatabase;
+using MovieDatabase.Entities;
 
 namespace Movie;
 
@@ -11,7 +12,7 @@ public static class GenreMapper
     /// <summary>
     /// Compose <paramref name="genres"/> into a <see cref="MovieGenreFlags"/>.
     /// </summary>
-    /// <param name="genres"></param>
+    /// <param name="genres">The genres to compose into a set of flags.</param>
     /// <returns></returns>
     public static MovieGenreFlags ComposeGenreFlags(IEnumerable<MovieGenre> genres)
     {
@@ -28,8 +29,8 @@ public static class GenreMapper
     /// <summary>
     /// Extract a set of individual <see cref="MovieGenre"/> from <paramref name="genres"/> and store the results in <see cref="outGenres"/>.
     /// </summary>
-    /// <param name="genres"></param>
-    /// <param name="outGenres"></param>
+    /// <param name="genres">The genres to convert.</param>
+    /// <param name="outGenres">The collection to store the results in.</param>
     public static void ExtractIndividualGenres(MovieGenreFlags genres, ICollection<MovieGenre> outGenres)
     {
         var intGenre = (int)genres;
@@ -55,7 +56,7 @@ public static class GenreMapper
     /// <summary>
     /// Get a <see cref="MovieGenreFlags"/> from <paramref name="genre"/>.
     /// </summary>
-    /// <param name="genre"></param>
+    /// <param name="genre">The genre to convert.</param>
     /// <returns></returns>
     /// <exception cref="ArgumentException"></exception>
     public static MovieGenreFlags GetFlagsGenre(MovieGenre genre)

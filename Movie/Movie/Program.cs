@@ -53,7 +53,6 @@ public class Program
             options.UseMySql(
                 connectionString,
                 version);
-            //dbOpts => { dbOpts.EnableRetryOnFailure(); });
         });
 
         var app = builder.Build();

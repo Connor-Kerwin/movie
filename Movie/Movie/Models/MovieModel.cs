@@ -1,4 +1,4 @@
-using MovieDatabase;
+using MovieDatabase.Entities;
 
 namespace Movie.Models;
 
