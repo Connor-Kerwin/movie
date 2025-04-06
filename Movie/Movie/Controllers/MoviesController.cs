@@ -7,7 +7,6 @@ using Microsoft.OpenApi.Models;
 using Movie.Models;
 using MovieDatabase;
 using Swashbuckle.AspNetCore.Annotations;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Movie.Controllers;
 
@@ -144,7 +143,8 @@ public class SearchModel
 
     [MaxLength(32)]
     [FromQuery(Name = "genres")]
-    public HashSet<string>? Genres { get; set; }
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public HashSet<MovieGenre>? Genres { get; set; }
 
     public MovieGenres ValidateGenre(ModelStateDictionary modelState)
     {
@@ -157,13 +157,13 @@ public class SearchModel
 
         foreach (var str in Genres)
         {
-            if (!GenreMapper.ParseSingleGenre(str, out var singleGenre))
-            {
-                modelState.AddModelError("genres", $"{str} is not a valid genre");
-                continue;
-            }
+            // if (!GenreMapper.ParseSingleGenre(str, out var singleGenre))
+            // {
+            //     modelState.AddModelError("genres", $"{str} is not a valid genre");
+            //     continue;
+            // }
 
-            var flagsGenre = GenreMapper.GetFlagsGenre(singleGenre);
+            var flagsGenre = GenreMapper.GetFlagsGenre(str);
             result |= flagsGenre;
         }
 

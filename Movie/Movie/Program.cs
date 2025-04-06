@@ -1,3 +1,5 @@
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Any;
 using Microsoft.OpenApi.Models;
@@ -29,25 +31,48 @@ public class Program
         {
             // We want to handle some MySql exceptions to return better errors
             options.Filters.Add(new MySqlExceptionFilter());
+        }).AddJsonOptions(opt =>
+        {
+            // NOTE: This has been done on purpose for all enum values.
+            // For consistency between enums being used in data models and URL query parameters, it's been set to a fixed casing (kebab case feels nicest)
+            opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.KebabCaseLower));
         });
-        
+
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(c =>
         {
+            // c.MapType<List<MovieGenre>>(() => new OpenApiSchema
+            // {
+            //     Type = "array",
+            //     Items = new OpenApiSchema
+            //     {
+            //         Type = "string",
+            //         Enum = Enum.GetNames(typeof(MovieGenre))
+            //             .Select(name => new Microsoft.OpenApi.Any.OpenApiString(name))
+            //             .Cast<Microsoft.OpenApi.Any.IOpenApiAny>()
+            //             .ToList()
+            //     }
+            // });
+            //
+            //
+            // c.SchemaFilter<SortModeSchemaFilter>();
+            // c.SchemaFilter<MovieGenreSchemaFilter>();
+
             // TODO: Following this approach, the genre filter can be setup like this too!
             // TODO: This should actually be done as an ISchemaFilter instead!
-            
-            var enm = new List<IOpenApiAny>
-            {
-                new OpenApiString(nameof(SortMode.Title).ToLower()),
-                new OpenApiString(nameof(SortMode.ReleaseDate).ToLower())
-            };
-
-            c.MapType<SortMode>(() => new OpenApiSchema
-            {
-                Type = "string",
-                Enum = enm
-            });
+            //
+            // var enm = new List<IOpenApiAny>
+            // {
+            //     new OpenApiString(nameof(SortMode.Title).ToLower()),
+            //     new OpenApiString(nameof(SortMode.ReleaseDate).ToLower())
+            // };
+            //
+            // c.MapType<SortMode>(() => new OpenApiSchema
+            // {
+            //     Type = "string",
+            //     Enum = enm
+            // });
         });
 
         // NOTE: The database (MySQL) is deployed as part of the compose step.

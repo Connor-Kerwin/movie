@@ -13,8 +13,7 @@ public class MovieModel
     public double? VoteAverage { get; set; }
     public DateTime? ReleaseDate { get; set; }
     public string? OriginalLanguage { get; set; }
-    
-    [JsonConverter(typeof(GenreListJsonConverter))]
+
     public List<MovieGenre> Genres { get; } = [];
 
     public MovieModel(MovieEntity entity)
