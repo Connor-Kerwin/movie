@@ -138,12 +138,11 @@ public class SearchModel
 
     [FromQuery(Name = "sortby")]
     [EnumDataType(typeof(SortMode))]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
     public SortMode SortBy { get; set; } = SortMode.Title;
 
     [MaxLength(32)]
     [FromQuery(Name = "genres")]
-    [JsonConverter(typeof(JsonStringEnumConverter))]
+    [ModelBinder(BinderType = typeof(KebabCaseEnumModelBinder<MovieGenre>))]
     public HashSet<MovieGenre>? Genres { get; set; }
 
     public MovieGenres ValidateGenre(ModelStateDictionary modelState)

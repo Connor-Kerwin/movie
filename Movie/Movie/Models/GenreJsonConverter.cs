@@ -1,32 +1,64 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Movie.Models;
 
-/// <summary>
-/// A custom json converter is used to guarantee that the list of genres returned via JSON is sent lowercase.
-/// This is because we want to match the URL query parameters with the json responses (all lowercase!)
-/// </summary>
-public class GenreListJsonConverter : JsonConverter<List<MovieGenre>>
+public class KebabCaseEnumModelBinder<T> : IModelBinder
+    where T : struct, Enum
 {
-    public override List<MovieGenre>? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+    public Task BindModelAsync(ModelBindingContext bindingContext)
     {
-        // TODO: Ideally, we want to implement the read method.
-        // But because we don't actually read them in yet, its fine
-        
-        throw new NotImplementedException();
-    }
+        var value = bindingContext.ValueProvider.GetValue(bindingContext.ModelName);
 
-    public override void Write(Utf8JsonWriter writer, List<MovieGenre> value, JsonSerializerOptions options)
-    {
-        writer.WriteStartArray();
-
-        foreach (var genre in value)
+        // No enum specified
+        if (string.IsNullOrWhiteSpace(value.FirstValue))
         {
-            var asString = GenreMapper.GetGenreString(genre);
-            writer.WriteStringValue(asString);
+            bindingContext.Result = ModelBindingResult.Success(new HashSet<T>());
+            return Task.CompletedTask;
+        }
+
+        var set = new HashSet<T>();
+        var hasError = false;
+        foreach (var item in value.Values)
+        {
+            var result = ParseEnum(item);
+            if (result == null)
+            {
+                hasError = true;
+                bindingContext.ModelState.AddModelError(bindingContext.ModelName, $"The value '{item}' is not valid for {bindingContext.ModelName}.");
+                continue;
+            }
+
+            set.Add(result.Value);
+        }
+
+        if (hasError)
+        {
+            bindingContext.Result = ModelBindingResult.Failed();
+            return Task.CompletedTask;
         }
         
-        writer.WriteEndArray();
+        bindingContext.Result = ModelBindingResult.Success(set);
+        return Task.CompletedTask;
+    }
+
+    private T? ParseEnum(string value)
+    {
+        foreach (var enumName in Enum.GetNames(typeof(T)))
+        {
+            if (ToKebabCase(enumName).Equals(value, StringComparison.OrdinalIgnoreCase))
+            {
+                return Enum.Parse<T>(enumName);
+            }
+        }
+
+        return null;
+    }
+
+    private string ToKebabCase(string input)
+    {
+        return string.Concat(input.Select((c, i) =>
+            char.IsUpper(c) && i > 0 ? "-" + char.ToLower(c) : char.ToLower(c).ToString()));
     }
 }

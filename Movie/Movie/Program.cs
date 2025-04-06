@@ -40,40 +40,7 @@ public class Program
 
 
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(c =>
-        {
-            // c.MapType<List<MovieGenre>>(() => new OpenApiSchema
-            // {
-            //     Type = "array",
-            //     Items = new OpenApiSchema
-            //     {
-            //         Type = "string",
-            //         Enum = Enum.GetNames(typeof(MovieGenre))
-            //             .Select(name => new Microsoft.OpenApi.Any.OpenApiString(name))
-            //             .Cast<Microsoft.OpenApi.Any.IOpenApiAny>()
-            //             .ToList()
-            //     }
-            // });
-            //
-            //
-            // c.SchemaFilter<SortModeSchemaFilter>();
-            // c.SchemaFilter<MovieGenreSchemaFilter>();
-
-            // TODO: Following this approach, the genre filter can be setup like this too!
-            // TODO: This should actually be done as an ISchemaFilter instead!
-            //
-            // var enm = new List<IOpenApiAny>
-            // {
-            //     new OpenApiString(nameof(SortMode.Title).ToLower()),
-            //     new OpenApiString(nameof(SortMode.ReleaseDate).ToLower())
-            // };
-            //
-            // c.MapType<SortMode>(() => new OpenApiSchema
-            // {
-            //     Type = "string",
-            //     Enum = enm
-            // });
-        });
+        builder.Services.AddSwaggerGen();
 
         // NOTE: The database (MySQL) is deployed as part of the compose step.
         // In production, this would not be the best idea. It should be hosted separately.
