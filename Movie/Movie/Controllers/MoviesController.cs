@@ -67,6 +67,30 @@ public class MoviesController : ControllerBase
     }
 
     /// <summary>
+    /// Get a movie based on its unique id. This is mostly included as a nice to have functionality. Depending on the use case, this endpoint might not want to exist!
+    /// </summary>
+    /// <param name="id">The id of the movie to search for.</param>
+    /// <param name="cancellation">The means to cancel the request.</param>
+    /// <returns></returns>
+    [HttpGet("{id:int}")]
+    [Produces("application/json")]
+    [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(MovieModel))]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+    [SwaggerResponse(StatusCodes.Status503ServiceUnavailable, Type = typeof(ErrorModel))]
+    public async Task<IActionResult> GetMovie(int id, CancellationToken cancellation)
+    {
+        var entity = await db.Movies.FindAsync(id, cancellation);
+
+        if (entity == null)
+        {
+            return NotFound();
+        }
+        
+        var model = new MovieModel(entity);
+        return Ok(model);
+    }
+    
+    /// <summary>
     /// Get a list of possible genres.
     /// </summary>
     /// <returns></returns>

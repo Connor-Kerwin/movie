@@ -37,7 +37,7 @@ public class SearchModel
     public OrderBy OrderBy { get; set; } = OrderBy.Asc;
 
     /// <summary>
-    /// A set of genres to filter by.
+    /// A set of genres to filter by. You can choose more than one to filter by.
     /// </summary>
     [MaxLength(32)]
     [FromQuery(Name = "genres")]
