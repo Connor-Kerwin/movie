@@ -16,6 +16,32 @@ public class MovieController : ControllerBase
         this.db = db;
     }
 
+    [HttpGet("search")]
+    public async Task<IActionResult> Search(
+        [FromQuery] string? title, 
+        [FromQuery] int? pageSize,
+        [FromQuery] int? page)
+    {
+        var actualPage = page ?? 0;
+        var actualPageSize = pageSize ?? 0;
+        
+        var position = actualPage * actualPageSize;
+
+        var results = await db.Movies
+            .Skip(position)
+            .Take(actualPageSize)
+            .ToListAsync();
+
+        var resultModels = new List<MovieModel>(results.Count);
+        foreach (var entity in results)
+        {
+            var model = new MovieModel(entity);
+            resultModels.Add(model);
+        }
+
+        return Ok(resultModels);
+    }
+
     [HttpGet("Test")]
     public async Task<IActionResult> Test()
     {

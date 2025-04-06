@@ -1,6 +1,6 @@
-@Movie_HostAddress = http://localhost:5000
+@Movie_HostAddress = http://localhost:5033
 
-GET {{Movie_HostAddress}}/movie/Test
+GET {{Movie_HostAddress}}/movie/search?pageSize=2&title=hello&page=0
 Accept: application/json
 
 ###
