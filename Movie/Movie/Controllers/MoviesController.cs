@@ -31,6 +31,10 @@ public class MoviesController : ControllerBase
     [SwaggerResponse(StatusCodes.Status503ServiceUnavailable, Type = typeof(ErrorModel))]
     public async Task<IActionResult> GetMovies([FromQuery] SearchModel parameters, CancellationToken cancellation)
     {
+        // NOTE: This implementation relies on using an offset-based pagination.
+        // This can be expensive for large data sets; keyset pagination could be
+        // preferred in large data sets that don't explicitly require random access.
+        
         if (!ModelState.IsValid)
         {
             return BadRequest(ModelState);
@@ -80,7 +84,9 @@ public class MoviesController : ControllerBase
     [SwaggerResponse(StatusCodes.Status503ServiceUnavailable, Type = typeof(ErrorModel))]
     public async Task<IActionResult> GetMovie(int id, CancellationToken cancellation)
     {
-        var entity = await db.Movies.FindAsync(id, cancellation);
+        var entity = await db.Movies
+            .AsNoTracking()
+            .FirstOrDefaultAsync(m => m.Id == id, cancellation);
 
         if (entity == null)
         {
