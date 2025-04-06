@@ -32,10 +32,6 @@ public class Program
             options.IncludeXmlComments(xmlPath);
         });
 
-        // NOTE: The database (MySQL) is deployed as part of the compose step.
-        // In production, this would not be the best idea. It should be hosted separately.
-        // For ease of use, it is coupled.
-
         // NOTE: The connection string has been embedded into the appsettings.json file.
         // This is not an ideal scenario because we end up versioning the credentials.
         // Instead, we should use user secrets or some other kind of deployment steps
@@ -77,6 +73,6 @@ public class Program
         app.UseAuthorization();
         app.MapControllers();
 
-        app.Run();
+        await app.RunAsync();
     }
 }

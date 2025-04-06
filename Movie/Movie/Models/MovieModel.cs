@@ -17,6 +17,7 @@ public class PageInfoModel
 
 public class MovieModel
 {
+    public int Id { get; set; }
     public string Title { get; set; }
     public string Overview { get; set; }
     public float? Popularity { get; set; }
@@ -30,6 +31,7 @@ public class MovieModel
 
     public MovieModel(MovieEntity entity)
     {
+        Id = entity.Id;
         Title = entity.Title;
         Overview = entity.Overview;
         Popularity = entity.Popularity;

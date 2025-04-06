@@ -15,9 +15,6 @@ class Program
 {
     static async Task Main(string[] args)
     {
-        // TODO: This needs to initiate a database migration and seed the data.
-        //  May want to do this as separate steps via args?
-
         var builder = Host.CreateApplicationBuilder();
 
         builder.Configuration.AddJsonFile(
