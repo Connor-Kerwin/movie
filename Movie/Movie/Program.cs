@@ -1,4 +1,7 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Any;
+using Microsoft.OpenApi.Models;
+using Movie.Controllers;
 using Movie.Models;
 using MovieDatabase;
 
@@ -29,7 +32,23 @@ public class Program
         });
         
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen();
+        builder.Services.AddSwaggerGen(c =>
+        {
+            // TODO: Following this approach, the genre filter can be setup like this too!
+            // TODO: This should actually be done as an ISchemaFilter instead!
+            
+            var enm = new List<IOpenApiAny>
+            {
+                new OpenApiString(nameof(SortMode.Title).ToLower()),
+                new OpenApiString(nameof(SortMode.ReleaseDate).ToLower())
+            };
+
+            c.MapType<SortMode>(() => new OpenApiSchema
+            {
+                Type = "string",
+                Enum = enm
+            });
+        });
 
         // NOTE: The database (MySQL) is deployed as part of the compose step.
         // In production, this would not be the best idea. It should be hosted separately.

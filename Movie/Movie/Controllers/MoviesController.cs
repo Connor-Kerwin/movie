@@ -3,8 +3,11 @@ using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 using Movie.Models;
 using MovieDatabase;
+using Swashbuckle.AspNetCore.Annotations;
+using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Movie.Controllers;
 
@@ -42,6 +45,7 @@ public class MoviesController : ControllerBase
     [HttpGet]
     public async Task<IActionResult> GetMovies([FromQuery] SearchModel parameters)
     {
+        // TODO: Genre validation can maybe run automatically as a custom validator!
         var genreFilter = parameters.ValidateGenre(ModelState);
 
         if (!ModelState.IsValid)
@@ -84,7 +88,7 @@ public class MoviesController : ControllerBase
 
         var request = db.Movies
             .AsNoTracking();
-        
+
         // Optionally apply the genre filter
         if (genreFilter != MovieGenres.None)
         {
@@ -115,6 +119,12 @@ public class MoviesController : ControllerBase
     }
 }
 
+public enum SortMode
+{
+    Title,
+    ReleaseDate
+}
+
 public class SearchModel
 {
     [Required]
@@ -126,6 +136,11 @@ public class SearchModel
     [Range(1, 64)]
     [FromQuery(Name = "pagesize")]
     public int PageSize { get; set; }
+
+    [FromQuery(Name = "sortby")]
+    [EnumDataType(typeof(SortMode))]
+    [JsonConverter(typeof(JsonStringEnumConverter))]
+    public SortMode SortBy { get; set; } = SortMode.Title;
 
     [MaxLength(32)]
     [FromQuery(Name = "genres")]
