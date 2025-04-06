@@ -3,8 +3,10 @@ using CsvHelper;
 using CsvHelper.Configuration;
 using CsvHelper.Configuration.Attributes;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using MovieDatabase;
 
 namespace Seeder;
@@ -18,9 +20,18 @@ class Program
 
         var builder = Host.CreateApplicationBuilder();
 
-        // TODO: Config? (create appsettings, etc.)
-        var connectionString =
-            "Server=host.docker.internal;Port=3306;Database=mydatabase;User=root;Password=yourpassword;";
+        builder.Configuration.AddJsonFile(
+            "appsettings.json",
+            optional: false,
+            reloadOnChange: true);
+
+        var connectionString = builder.Configuration.GetConnectionString("MovieDatabase");
+
+        // We cannot continue if the connection string isn't in our configuration
+        if (connectionString == null)
+        {
+            throw new Exception("MovieDatabase connection string was missing from the configuration");
+        }
 
         builder.Services.AddDbContext<MovieDbContext>(options =>
         {
@@ -31,8 +42,6 @@ class Program
                 dbOpts => { dbOpts.EnableRetryOnFailure(); });
         });
 
-        // TODO: Initialize services, etc. Probably dont need much, dbcontext, etc.
-
         var app = builder.Build();
 
         // Short circuit and shut the app down if we're running design time (EF Migrations)
@@ -42,16 +51,17 @@ class Program
         }
 
         await SeedDatabase(app);
-
-        Console.WriteLine("Hello, World!");
     }
 
     private static async Task SeedDatabase(IHost app)
     {
         using (var scope = app.Services.CreateScope())
         {
+            var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
             var context = scope.ServiceProvider.GetRequiredService<MovieDbContext>();
 
+            logger.LogInformation("Migrating database...");
+            
             // Auto run migrations
             await context.Database.MigrateAsync();
 
@@ -59,6 +69,15 @@ class Program
 
             if (!context.Movies.Any())
             {
+                logger.LogInformation("Seeding database...");
+
+                if (!File.Exists("movies.csv"))
+                {
+                    logger.LogError("movies.csv not found");
+                    return;
+                }
+                
+                var exported = 0;
                 using (var reader = new StreamReader("movies.csv"))
                 {
                     var config = new CsvConfiguration(CultureInfo.InvariantCulture)
@@ -85,18 +104,20 @@ class Program
                                 PosterUrl = csvModel.PosterUrl,
                                 Popularity = csvModel.Popularity,
                             };
-                            
+
                             var genre = ParseGenre(csvModel.Genre);
                             model.Genres = genre;
 
                             // TODO: Here, if there is a movie genre that is none, what is the best course of action?
                             //  A nullable genre would maybe work, but it makes usage awkward. Maybe unknown genre?
-                            
+
                             if (genre == MovieGenreFlags.None)
                             {
-                                Console.WriteLine($"Failed to identify movie genre '{csvModel.Genre}' for {csvModel.Title}");
+                                logger.LogWarning(
+                                    $"Failed to identify movie genre '{csvModel.Genre}' for {csvModel.Title}");
                             }
-                            
+
+                            exported++;
                             context.Movies.Add(model);
 
                             var csvGenres = csvModel.Genre.Split(',');
@@ -107,9 +128,16 @@ class Program
                             }
                         }
                     }
-                    
+
                     await context.SaveChangesAsync();
                 }
+                
+                logger.LogInformation($"Migrated {exported} records into the database");
+            }
+            else // Already seeded
+            {
+                var count = await context.Movies.CountAsync();
+                logger.LogInformation($"Database seeding skipped, data was detected ({count} items)");
             }
         }
     }
@@ -132,7 +160,7 @@ class Program
                 result |= itemGenre;
             }
         }
-        
+
         return result;
     }
 

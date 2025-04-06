@@ -26,6 +26,8 @@ public class MoviesController : ControllerBase
     [HttpGet]
     [Produces("application/json")]
     [SwaggerResponse(StatusCodes.Status200OK, Type = typeof(PaginatedMoviesModel))]
+    [SwaggerResponse(StatusCodes.Status500InternalServerError, Type = typeof(ErrorModel))]
+    [SwaggerResponse(StatusCodes.Status503ServiceUnavailable, Type = typeof(ErrorModel))]
     public async Task<IActionResult> GetMovies([FromQuery] SearchModel parameters, CancellationToken cancellation)
     {
         if (!ModelState.IsValid)

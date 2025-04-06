@@ -1,9 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Any;
-using Microsoft.OpenApi.Models;
-using Movie.Controllers;
 using Movie.Models;
 using MovieDatabase;
 
@@ -11,20 +8,8 @@ namespace Movie;
 
 public class Program
 {
-    private static void Test()
-    {
-        var entity = new MovieEntity();
-
-        entity.Genres = MovieGenreFlags.Comedy | MovieGenreFlags.Horror | MovieGenreFlags.Thriller | MovieGenreFlags.Romance;
-        //entity.Genre = (MovieGenres)int.MaxValue;
-
-        var a = new MovieModel(entity);
-    }
-
     public static async Task Main(string[] args)
     {
-        Test();
-
         var builder = WebApplication.CreateBuilder(args);
 
         builder.Services.AddControllers(options =>
@@ -38,7 +23,6 @@ public class Program
             opt.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(JsonNamingPolicy.KebabCaseLower));
         });
 
-
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen(options =>
         {
@@ -46,7 +30,6 @@ public class Program
             var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
             var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             options.IncludeXmlComments(xmlPath);
-
         });
 
         // NOTE: The database (MySQL) is deployed as part of the compose step.

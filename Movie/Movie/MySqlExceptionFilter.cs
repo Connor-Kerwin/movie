@@ -5,6 +5,9 @@ using MySqlConnector;
 
 namespace Movie;
 
+/// <summary>
+/// This filter helps to automatically handle MySql exceptions.
+/// </summary>
 public class MySqlExceptionFilter : ExceptionFilterAttribute
 {
     public override void OnException(ExceptionContext context)
@@ -31,7 +34,7 @@ public class MySqlExceptionFilter : ExceptionFilterAttribute
         {
             var response = new ErrorModel
             {
-                Message = "Database unavailable"
+                Error = "Database unavailable"
             };
             
             context.HttpContext.Response.StatusCode = StatusCodes.Status503ServiceUnavailable;
@@ -43,7 +46,7 @@ public class MySqlExceptionFilter : ExceptionFilterAttribute
         {
             var response = new ErrorModel
             {
-                Message = "A database error occurred"
+                Error = "A database error occurred"
             };
             
             context.HttpContext.Response.StatusCode = StatusCodes.Status500InternalServerError;
