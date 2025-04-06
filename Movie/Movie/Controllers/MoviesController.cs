@@ -137,7 +137,7 @@ public class SearchModel
     public int PageSize { get; set; }
 
     [FromQuery(Name = "sortby")]
-    [EnumDataType(typeof(SortMode))]
+    [ModelBinder(BinderType = typeof(KebabCaseEnumModelBinder<SortMode>))]
     public SortMode SortBy { get; set; } = SortMode.Title;
 
     [MaxLength(32)]

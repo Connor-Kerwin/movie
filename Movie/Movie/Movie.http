@@ -1,6 +1,6 @@
 @Movie_HostAddress = http://localhost:5033
 
-GET {{Movie_HostAddress}}/api/movies?page=-1&pageSize=10&genres=hello&genres=dude
+GET {{Movie_HostAddress}}/api/movies?page=1&pageSize=10
 Accept: application/json
 
 ###
