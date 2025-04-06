@@ -109,9 +109,20 @@ public class MoviesController : ControllerBase
         }
 
         var entities = await request
-            .Skip(position)
-            .Take(parameters.PageSize)
-            .ToListAsync();
+            .GroupBy(m => true)
+            .Select(g => new
+            {
+                // NOTE: As a single transaction, pull out the total number of items
+                
+                Total = g.Count(),
+                Records = g.Skip(position).Take(parameters.PageSize).ToList()
+            })
+            .FirstOrDefaultAsync();
+            
+            //
+            // .Skip(position)
+            // .Take(parameters.PageSize)
+            // .ToListAsync();
 
         var result = new PaginatedMoviesModel()
         {
@@ -119,12 +130,12 @@ public class MoviesController : ControllerBase
             {
                 PageSize = parameters.PageSize,
                 Page = parameters.Page,
-                TotalRecords = 1337 // TODO: Pull this as part of the query
+                TotalRecords = entities.Total // TODO: Pull this as part of the query
             },
             Records = new List<MovieModel>()
         };
 
-        foreach (var entity in entities)
+        foreach (var entity in entities.Records)
         {
             var model = new MovieModel(entity);
             result.Records.Add(model);
