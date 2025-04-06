@@ -12,17 +12,22 @@ public class Program
 
         entity.Genre = MovieGenres.Comedy | MovieGenres.Horror | MovieGenres.Thriller | MovieGenres.Romance;
         //entity.Genre = (MovieGenres)int.MaxValue;
-        
+
         var a = new MovieModel(entity);
     }
-    
+
     public static async Task Main(string[] args)
     {
         Test();
-        
+
         var builder = WebApplication.CreateBuilder(args);
+
+        builder.Services.AddControllers(options =>
+        {
+            // We want to handle some MySql exceptions to return better errors
+            options.Filters.Add(new MySqlExceptionFilter());
+        });
         
-        builder.Services.AddControllers();
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -45,18 +50,17 @@ public class Program
 
         builder.Services.AddDbContext<MovieDbContext>(options =>
         {
+            var version = new MySqlServerVersion(new Version(8, 0, 21));
+
             // We assume MySql is being used as the database
             options.UseMySql(
                 connectionString,
-                ServerVersion.AutoDetect(connectionString),
-                dbOpts =>
-                {
-                    dbOpts.EnableRetryOnFailure();
-                });
+                version);
+            //dbOpts => { dbOpts.EnableRetryOnFailure(); });
         });
 
         var app = builder.Build();
-        
+
         // Configure the HTTP request pipeline.
         if (app.Environment.IsDevelopment())
         {
