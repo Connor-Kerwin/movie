@@ -2,7 +2,7 @@ using System.Net;
 
 namespace Movie.API.Tests;
 
-public class Api_Movies_InputValidation
+public class MoviesApiTests
 {
     private static Uri serverAddress = new Uri("http://localhost:5000/");
     private static HttpClient client = new HttpClient();
