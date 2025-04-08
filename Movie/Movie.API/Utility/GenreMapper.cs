@@ -1,8 +1,7 @@
-using Movie.Models;
-using MovieDatabase;
-using MovieDatabase.Entities;
+using Movie.API.Models;
+using Movie.Database.Entities;
 
-namespace Movie;
+namespace Movie.API.Utility;
 
 /// <summary>
 /// A utility class which facilitates the process of converting between <see cref="MovieGenre"/> and <see cref="MovieGenreFlags"/>.

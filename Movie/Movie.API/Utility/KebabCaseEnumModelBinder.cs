@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
-namespace Movie;
+namespace Movie.API.Utility;
 
 /// <summary>
 /// To match kebab-casing for genres and other enums, a custom implementation of a model binder was required.

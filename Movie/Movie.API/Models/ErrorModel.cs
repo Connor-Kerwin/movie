@@ -1,4 +1,4 @@
-namespace Movie.Models;
+namespace Movie.API.Models;
 
 public class ErrorModel
 {

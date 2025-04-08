@@ -1,6 +1,7 @@
-using MovieDatabase.Entities;
+using Movie.API.Utility;
+using Movie.Database.Entities;
 
-namespace Movie.Models;
+namespace Movie.API.Models;
 
 public class MovieModel
 {

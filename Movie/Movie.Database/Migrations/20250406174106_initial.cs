@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace MovieDatabase.Migrations
+namespace Movie.Database.Migrations
 {
     /// <inheritdoc />
     public partial class initial : Migration

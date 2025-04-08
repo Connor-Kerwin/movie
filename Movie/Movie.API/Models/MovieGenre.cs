@@ -1,5 +1,5 @@
 
-namespace Movie.Models;
+namespace Movie.API.Models;
 
 public enum MovieGenre
 {

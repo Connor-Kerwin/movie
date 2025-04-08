@@ -1,8 +1,8 @@
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
-using Movie.Models;
+using Movie.API.Utility;
 
-namespace Movie.Controllers;
+namespace Movie.API.Models;
 
 public class SearchModel
 {

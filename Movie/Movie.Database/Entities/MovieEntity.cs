@@ -1,4 +1,4 @@
-namespace MovieDatabase.Entities;
+namespace Movie.Database.Entities;
 
 public class MovieEntity
 {

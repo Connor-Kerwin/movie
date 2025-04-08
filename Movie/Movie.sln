@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movie", "Movie\Movie.csproj", "{FFDEFEB3-4C66-42F9-B5E4-7434160062A2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movie.API", "Movie.API\Movie.API.csproj", "{FFDEFEB3-4C66-42F9-B5E4-7434160062A2}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D8ADF01F-F15D-43DE-896E-B94FB88C9324}"
 	ProjectSection(SolutionItems) = preProject
@@ -8,9 +8,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		compose-db.yaml = compose-db.yaml
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Seeder", "Seeder\Seeder.csproj", "{41A99CD1-D3FA-4124-805B-50E086CCB42B}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movie.Seeder", "Movie.Seeder\Movie.Seeder.csproj", "{41A99CD1-D3FA-4124-805B-50E086CCB42B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MovieDatabase", "MovieDatabase\MovieDatabase.csproj", "{85024D0E-3958-49B4-B304-A207E4416169}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movie.Database", "Movie.Database\Movie.Database.csproj", "{85024D0E-3958-49B4-B304-A207E4416169}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

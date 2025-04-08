@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Movie.Models;
+using Movie.API.Models;
 using MySqlConnector;
 
-namespace Movie;
+namespace Movie.API.Utility;
 
 /// <summary>
 /// This filter helps to automatically handle MySql exceptions.

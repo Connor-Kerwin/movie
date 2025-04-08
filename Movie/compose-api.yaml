@@ -1,9 +1,9 @@
 ﻿services:
-  movie:
-    image: movie
+  api:
+    image: movie-api
     build:
       context: .
-      dockerfile: Movie/Dockerfile
+      dockerfile: Movie.API/Dockerfile
     ports:
       - "5000:8080"
     environment:

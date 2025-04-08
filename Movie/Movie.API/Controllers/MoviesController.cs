@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Movie.Models;
-using MovieDatabase;
-using MovieDatabase.Entities;
+using Movie.API.Models;
+using Movie.API.Utility;
+using Movie.Database;
+using Movie.Database.Entities;
 using Swashbuckle.AspNetCore.Annotations;
 
-namespace Movie.Controllers;
+namespace Movie.API.Controllers;
 
 [ApiController]
 [Route("api/movies")]

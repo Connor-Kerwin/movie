@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MovieDatabase.Entities;
+using Movie.Database.Entities;
 
-namespace MovieDatabase;
+namespace Movie.Database;
 
 public class MovieDbContext : DbContext
 {

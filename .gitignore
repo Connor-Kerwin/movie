@@ -1,9 +1,9 @@
 /Movie/.idea
-/Movie/Movie/bin
-/Movie/Movie/obj
-/Movie/Movie/.idea
-/Movie/MovieDatabase/bin
-/Movie/MovieDatabase/obj
-/Movie/Seeder/obj
-/Movie/Seeder/bin
+/Movie/Movie.API/bin
+/Movie/Movie.API/obj
+/Movie/Movie.API/.idea
+/Movie/Movie.Database/bin
+/Movie/Movie.Database/obj
+/Movie/Movie.Seeder/obj
+/Movie/Movie.Seeder/bin
 /Movie/Movie.sln.DotSettings.user

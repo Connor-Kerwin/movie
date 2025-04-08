@@ -1,10 +1,10 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
-using Movie.Models;
-using MovieDatabase;
+using Movie.API.Utility;
+using Movie.Database;
 
-namespace Movie;
+namespace Movie.API;
 
 public class Program
 {
@@ -37,12 +37,12 @@ public class Program
         // Instead, we should use user secrets or some other kind of deployment steps
         // to inject the credentials. For ease of use though, we just include it anyway.
 
-        var connectionString = builder.Configuration.GetConnectionString("MovieDatabase");
+        var connectionString = builder.Configuration.GetConnectionString("Movie.Database");
 
         // We cannot continue if the connection string isn't in our configuration
         if (connectionString == null)
         {
-            throw new Exception("MovieDatabase connection string was missing from the configuration");
+            throw new Exception("Movie.Database connection string was missing from the configuration");
         }
 
         builder.Services.AddDbContext<MovieDbContext>(options =>
@@ -63,7 +63,7 @@ public class Program
             app.UseSwagger();
             app.UseSwaggerUI(s =>
             {
-                s.SwaggerEndpoint("/swagger/v1/swagger.json", "Movie Api");
+                s.SwaggerEndpoint("/swagger/v1/swagger.json", "Movie.API Api");
                 s.RoutePrefix = "api/info";
             });
         }

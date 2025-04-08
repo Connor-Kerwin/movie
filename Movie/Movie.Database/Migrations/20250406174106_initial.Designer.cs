@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using MovieDatabase;
+using Movie.Database;
 
 #nullable disable
 
-namespace MovieDatabase.Migrations
+namespace Movie.Database.Migrations
 {
     [DbContext(typeof(MovieDbContext))]
     [Migration("20250406174106_initial")]
@@ -25,7 +25,7 @@ namespace MovieDatabase.Migrations
 
             MySqlModelBuilderExtensions.AutoIncrementColumns(modelBuilder);
 
-            modelBuilder.Entity("MovieDatabase.MovieEntity", b =>
+            modelBuilder.Entity("Movie.Database.MovieEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
