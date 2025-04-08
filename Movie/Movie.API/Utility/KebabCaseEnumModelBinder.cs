@@ -42,6 +42,8 @@ public class KebabCaseEnumModelBinder<T> : IModelBinder
         if (result == null)
         {
             bindingContext.Result = ModelBindingResult.Failed();
+            bindingContext.ModelState.AddModelError(bindingContext.ModelName,
+                $"The value '{value.FirstValue}' is not valid for {bindingContext.ModelName}.");
             return Task.CompletedTask;
         }
 

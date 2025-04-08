@@ -37,12 +37,12 @@ public class Program
         // Instead, we should use user secrets or some other kind of deployment steps
         // to inject the credentials. For ease of use though, we just include it anyway.
 
-        var connectionString = builder.Configuration.GetConnectionString("Movie.Database");
+        var connectionString = builder.Configuration.GetConnectionString("MovieDatabase");
 
         // We cannot continue if the connection string isn't in our configuration
         if (connectionString == null)
         {
-            throw new Exception("Movie.Database connection string was missing from the configuration");
+            throw new Exception("MovieDatabase connection string was missing from the configuration");
         }
 
         builder.Services.AddDbContext<MovieDbContext>(options =>

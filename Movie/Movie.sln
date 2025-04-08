@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movie.Seeder", "Movie.Seede
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movie.Database", "Movie.Database\Movie.Database.csproj", "{85024D0E-3958-49B4-B304-A207E4416169}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Movie.API.Tests", "Movie.API.Tests\Movie.API.Tests.csproj", "{96B7CE0E-08AA-4E83-A893-8BB13E446897}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -30,5 +32,9 @@ Global
 		{85024D0E-3958-49B4-B304-A207E4416169}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{85024D0E-3958-49B4-B304-A207E4416169}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{85024D0E-3958-49B4-B304-A207E4416169}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96B7CE0E-08AA-4E83-A893-8BB13E446897}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96B7CE0E-08AA-4E83-A893-8BB13E446897}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96B7CE0E-08AA-4E83-A893-8BB13E446897}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96B7CE0E-08AA-4E83-A893-8BB13E446897}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
